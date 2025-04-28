@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soccer Tactics Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Soccer Tactics Board</h1>
+    <div class="toolbar">
+        <button id="clearBtn">Clear Current Board</button>
+        <div class="color-picker">
+            <span>Color:</span>
+            <button class="color-btn" data-color="blue" style="background-color: blue;"></button>
+            <button class="color-btn" data-color="red" style="background-color: red;"></button>
+            <button class="color-btn" data-color="yellow" style="background-color: yellow;"></button>
+            <button class="color-btn" data-color="white" style="background-color: white; border: 1px solid #ccc;"></button>
+            <button class="color-btn" data-color="black" style="background-color: black;"></button>
+        </div>
+    </div>
+    <canvas id="tacticsCanvas" width="800" height="550"></canvas>
+
+    <div class="board-navigation">
+        <button id="prevBoardBtn" title="Previous Board">&lt;</button>
+        <span id="boardIndicator">Board 1 of 1</span>
+        <button id="nextBoardBtn" title="Next Board">&gt;</button>
+        <button id="addBoardBtn" title="Add New Board">+</button>
+        <button id="playBtn" title="Play Boards">▶ Play</button> <!-- Added Play Button -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

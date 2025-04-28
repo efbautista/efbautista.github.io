@@ -1,0 +1,47 @@
+/* ... (previous CSS rules) ... */
+
+.toolbar {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #eee;
+    border-radius: 5px;
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Vertically center items */
+    gap: 15px; /* Space between toolbar items */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+.color-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between color buttons */
+}
+
+.color-picker span {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.color-btn {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #555;
+    border-radius: 50%; /* Make them circular */
+    cursor: pointer;
+    padding: 0; /* Remove default padding */
+    font-size: 0; /* Hide potential text inside */
+    transition: transform 0.1s ease-in-out;
+}
+
+.color-btn:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.color-btn.selected {
+    border: 3px solid #007bff; /* Highlight selected color */
+    transform: scale(1.1);
+}
+
+
+/* ... (rest of the CSS rules) ... */
