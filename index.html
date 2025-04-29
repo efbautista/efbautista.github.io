@@ -18,7 +18,9 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            /* Add more styles for lines, goals, etc. */
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack children vertically */
+            justify-content: space-between; /* Push elements apart */
         }
 
         /* Ensure field takes full height of its column */
@@ -30,61 +32,182 @@
             flex-grow: 1;
         }
 
+        /* Canvas specific styling */
+        #tacticsCanvas {
+            /* background-color: rgba(255, 255, 255, 0.1); */ /* Optional: slight background */
+            border: 1px dashed rgba(255, 255, 255, 0.5);
+            cursor: crosshair;
+            flex-grow: 1; /* Allow canvas to take available space */
+            margin-bottom: 10px; /* Space before navigation */
+            /* Set explicit width/height via JS for canvas drawing */
+        }
+
+        /* Toolbar and Navigation styling */
+        .toolbar, .board-navigation {
+            padding: 5px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* Add spacing between buttons */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .color-picker {
+            display: inline-flex; /* Align items inline */
+            align-items: center;
+            gap: 5px;
+        }
+
+        .color-btn {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #555;
+            cursor: pointer;
+            border-radius: 50%; /* Make them circles */
+        }
+        .color-btn.active {
+             border: 2px solid gold; /* Highlight active color */
+             transform: scale(1.1);
+        }
+
+
         /* Example: Make text smaller on smaller screens */
         @media (max-width: 767.98px) {
             .soccer-field {
                 font-size: 0.8rem;
-                height: 300px; /* Adjust height for smaller screens */
+                height: 350px; /* Adjust height for smaller screens */
+                padding: 10px;
             }
+            .toolbar, .board-navigation {
+                gap: 5px;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Adjust body padding to prevent content from hiding behind fixed navbar */
+        body {
+            padding-top: 56px; /* Adjust this value based on your navbar's height */
+        }
+
+        /* Style for the dropdown items */
+        .dropdown-item {
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Soccer Tactics</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center"> <!-- ms-auto pushes items to the right, align-items-center for vertical alignment -->
+
+        <!-- Boards Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarBoardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Boards
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarBoardsDropdown" id="navbarBoardsList">
+            <!-- Board links will be added here by JavaScript -->
+            <li><a class="dropdown-item active" href="#" data-board-index="0">Board 1</a></li>
+            <!-- Example: <li><a class="dropdown-item" href="#" data-board-index="1">Board 2</a></li> -->
+          </ul>
+        </li>
+
+        <!-- Add New Board Button -->
+        <li class="nav-item ms-2"> <!-- Add margin start for spacing -->
+          <button class="btn btn-outline-light btn-sm" id="navbarAddBoardBtn" title="Add New Board">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+               <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+             </svg>
+             Add Board
+          </button>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar End -->
+
+
 <div class="container mt-4">
-    <!-- Bootstrap Row -->
     <div class="row justify-content-center">
-        <!--
-           Bootstrap Column:
-           - col-12: Takes full width (12 columns) on extra small screens (mobile default).
-           - col-md-10: Takes 10 out of 12 columns on medium screens and up (tablets, desktops).
-           - col-lg-8: Takes 8 out of 12 columns on large screens and up (larger desktops).
-           You can adjust these breakpoints (sm, md, lg, xl, xxl) and column counts as needed.
-        -->
         <div class="col-12 col-md-10 col-lg-8 soccer-field-container">
-            <!-- Your Soccer Field Content Goes Here -->
             <div class="soccer-field">
-                <h1>Soccer Field</h1>
-                <!-- Add other field elements like lines, goals, center circle etc. -->
-                <h1>Soccer Tactics Board</h1>
-                <div class="toolbar">
-                    <button id="clearBtn">Clear Current Board</button>
-                    <div class="color-picker">
-                        <span>Color:</span>
-                        <button class="color-btn" data-color="blue" style="background-color: blue;"></button>
-                        <button class="color-btn" data-color="red" style="background-color: red;"></button>
-                        <button class="color-btn" data-color="yellow" style="background-color: yellow;"></button>
-                        <button class="color-btn" data-color="white" style="background-color: white; border: 1px solid #ccc;"></button>
-                        <button class="color-btn" data-color="black" style="background-color: black;"></button>
+                <!-- Top Section: Title and Toolbar -->
+                <div>
+                    <h1>Soccer Tactics Board</h1>
+                    <div class="toolbar">
+                        <button id="clearBtn" class="btn btn-danger btn-sm">Clear Current Board</button>
+                        <div class="color-picker">
+                            <span class="me-1">Color:</span>
+                            <button class="color-btn active" data-color="blue" style="background-color: blue;"></button>
+                            <button class="color-btn" data-color="red" style="background-color: red;"></button>
+                            <button class="color-btn" data-color="yellow" style="background-color: yellow;"></button>
+                            <button class="color-btn" data-color="white" style="background-color: white; border: 1px solid #ccc;"></button>
+                            <button class="color-btn" data-color="black" style="background-color: black;"></button>
+                        </div>
                     </div>
                 </div>
-                <canvas id="tacticsCanvas" ></canvas>
-            
+
+                <!-- Middle Section: Canvas -->
+                <canvas id="tacticsCanvas"></canvas>
+
+                <!-- Bottom Section: Board Navigation -->
                 <div class="board-navigation">
-                    <button id="prevBoardBtn" title="Previous Board">&lt;</button>
-                    <span id="boardIndicator">Board 1 of 1</span>
-                    <button id="nextBoardBtn" title="Next Board">&gt;</button>
-                    <button id="addBoardBtn" title="Add New Board">+</button>
-                    <button id="playBtn" title="Play Boards">▶ Play</button> <!-- Added Play Button -->
+                    <button id="prevBoardBtn" title="Previous Board" class="btn btn-secondary btn-sm">&lt;</button>
+                    <span id="boardIndicator" class="mx-2">Board 1 of 1</span>
+                    <button id="nextBoardBtn" title="Next Board" class="btn btn-secondary btn-sm">&gt;</button>
+                    <button id="addBoardBtn" title="Add New Board" class="btn btn-success btn-sm">+</button>
+                    <button id="playBtn" title="Play Boards" class="btn btn-primary btn-sm">▶ Play</button>
+                    <button id="deleteBoardBtn" title="Delete Current Board" class="btn btn-warning btn-sm">Delete</button> <!-- Added Delete Button -->
                 </div>
             </div>
-            <!-- End Soccer Field Content -->
         </div>
     </div>
 </div>
 
-<!-- Include Bootstrap JS (Optional, but often needed for components) -->
+<!-- Include Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Your Custom Script -->
 <script src="script.js"></script>
+<!-- Inline script for Navbar/Board Button connection (can be moved to script.js) -->
+<script>
+    // This part should ideally be inside your main script.js after the DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const navbarAddBtn = document.getElementById('navbarAddBoardBtn');
+        const addBoardBtn = document.getElementById('addBoardBtn'); // Button below canvas
+
+        // Check if the main script's addBoard function exists
+        if (navbarAddBtn && typeof window.addBoard === 'function') {
+             navbarAddBtn.addEventListener('click', window.addBoard);
+        } else if (navbarAddBtn && addBoardBtn) {
+            // Fallback if addBoard function isn't global: simulate click
+             navbarAddBtn.addEventListener('click', () => {
+                addBoardBtn.click();
+             });
+        }
+
+        // Add listener for dynamically added board links in the navbar
+        const navbarBoardsList = document.getElementById('navbarBoardsList');
+        if (navbarBoardsList && typeof window.switchToBoard === 'function') {
+            navbarBoardsList.addEventListener('click', (event) => {
+                if (event.target.matches('.dropdown-item[data-board-index]')) {
+                    event.preventDefault(); // Prevent default link behavior
+                    const index = parseInt(event.target.getAttribute('data-board-index'), 10);
+                    window.switchToBoard(index); // Call your function to switch boards
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>
